@@ -13,6 +13,10 @@ jobs:
       contents: 'read'
       id-token: 'write'
 
+    env:
+      SERVICE_NAME: 'gcp-wordle'
+      REGION: 'asia-northeast1' 
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -32,17 +36,17 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build --no-cache -t gcr.io/${{ secrets.PROJECT_ID }}/my-app:$GITHUB_SHA .
+          docker build --no-cache -t gcr.io/${{ secrets.PROJECT_ID }}/${{ env.SERVICE_NAME }}:$GITHUB_SHA .
 
       - name: Push Docker image
         run: |
           gcloud auth configure-docker
-          docker push gcr.io/${{ secrets.PROJECT_ID }}/my-app:$GITHUB_SHA
+          docker push gcr.io/${{ secrets.PROJECT_ID }}/${{ env.SERVICE_NAME }}:$GITHUB_SHA
 
       - name: Deploy to Cloud Run
         run: |
-          gcloud run deploy my-app \
-            --image gcr.io/${{ secrets.PROJECT_ID }}/my-app:$GITHUB_SHA \
+          gcloud run deploy ${{ env.SERVICE_NAME }} \
+            --image gcr.io/${{ secrets.PROJECT_ID }}/${{ env.SERVICE_NAME }}:$GITHUB_SHA \
             --platform managed \
-            --region asia-northeast1 \
+            --region  ${{ env.REGION }}\
             --allow-unauthenticated
