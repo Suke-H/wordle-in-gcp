@@ -44,6 +44,5 @@ jobs:
           gcloud run deploy my-app \
             --image gcr.io/${{ secrets.PROJECT_ID }}/my-app:$GITHUB_SHA \
             --platform managed \
-            --region us-central1 \
+            --region asia-northeast1 \
             --allow-unauthenticated
-            
