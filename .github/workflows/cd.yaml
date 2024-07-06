@@ -9,37 +9,41 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Authenticate to Google Cloud
-      uses: google-github-actions/auth@v1
-      with:
-        credentials_json: ${{ secrets.SA_KEY }}
+      - name: Authenticate to Google Cloud
+        id: auth
+        uses: google-github-actions/auth@v1
+        with:
+          workload_identity_provider: ${{ secrets.WIF_PROVIDER }}
+          service_account: ${{ secrets.SA_EMAIL }}
 
-    - name: Set up Cloud SDK
-      uses: google-github-actions/setup-gcloud@v1
-      with:
-        project_id: ${{ secrets.PROJECT_ID }}
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          project_id: ${{ secrets.PROJECT_ID }}
+          install_components: 'beta'
 
-    - name: Authenticate Docker to GCP
-      run: |
-        echo "${{ secrets.SA_KEY }}" | docker login -u _json_key --password-stdin https://gcr.io
+      - name: Build Docker image
+        run: |
+          docker build -t gcr.io/${{ secrets.PROJECT_ID }}/my-app:$GITHUB_SHA .
 
-    - name: Build Docker image
-      run: |
-        docker build -t gcr.io/${{ secrets.PROJECT_ID }}/my-app:$GITHUB_SHA .
+      - name: Push Docker image
+        run: |
+          gcloud auth configure-docker
+          docker push gcr.io/${{ secrets.PROJECT_ID }}/my-app:$GITHUB_SHA
 
-    - name: Push Docker image
-      run: |
-        docker push gcr.io/${{ secrets.PROJECT_ID }}/my-app:$GITHUB_SHA
-
-    - name: Deploy to Cloud Run
-      run: |
-        gcloud run deploy my-app \
-          --image gcr.io/${{ secrets.PROJECT_ID }}/my-app:$GITHUB_SHA \
-          --platform managed \
-          --region us-central1 \
-          --allow-unauthenticated
-          
+      - name: Deploy to Cloud Run
+        run: |
+          gcloud run deploy my-app \
+            --image gcr.io/${{ secrets.PROJECT_ID }}/my-app:$GITHUB_SHA \
+            --platform managed \
+            --region us-central1 \
+            --allow-unauthenticated
+            
