@@ -50,7 +50,7 @@ export const Notes = () => {
 			</li>
 			<li>
 			GitHubリポジトリは
-			<a href="https://github.com/Suke-H/wordle-sample/">こちら</a>
+			<a href="https://github.com/Suke-H/wordle-sample/">こちら</a>と<a href="https://github.com/Suke-H/wordle-in-gcp/">こちら</a>
 			</li>
 		</ul>
 
