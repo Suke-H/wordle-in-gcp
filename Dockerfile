@@ -1,4 +1,5 @@
 # Stage 1: Build
+#
 FROM node:20.11.1-alpine AS builder
 
 # 作業ディレクトリを設定
