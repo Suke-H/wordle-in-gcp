@@ -32,7 +32,7 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t gcr.io/${{ secrets.PROJECT_ID }}/my-app:$GITHUB_SHA .
+          docker build --no-cache -t gcr.io/${{ secrets.PROJECT_ID }}/my-app:$GITHUB_SHA .
 
       - name: Push Docker image
         run: |
