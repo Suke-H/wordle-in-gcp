@@ -1,7 +1,8 @@
 # wordle-in-gcp
 
 勉強としてWORDLEを作成し、Cloud Runへデプロイ 
-[https://kakutory.com/game_pages/](https://gcp-wordle-fdkaoebcda-an.a.run.app/game_pages/)
+
+https://gcp-wordle-fdkaoebcda-an.a.run.app/game_pages/
 
 <img width="35%" alt="PC表示" src="./docs/screenshot.png">
 
